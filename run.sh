@@ -15,9 +15,13 @@ if [ -f "$FILE" ]; then
 else 
     cp /vitality-goes/goestools-conf/goesrecv.conf /goes_config/goesrecv.conf
 fi
+echo "Starting goesrecv"
+nohup goesrecv -c /goes_config/goesrecv.conf > /dev/null &
 
-nohup goesrecv -c /goes_config/goesrecv.conf > /dev/null 2>&1 &
+echo "Starting goesproc"
+nohup goesproc -c /goes_config/goesproc-goesr.conf  --subscribe localhost:5000 > /dev/null &
 
-nohup goesproc -c /goes_config/goesproc-goesr.conf  --subscribe localhost:5000 > /dev/null 2>&1 &
-
+echo "Starting apache"
 service apache2 start
+
+fg %1
