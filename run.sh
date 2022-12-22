@@ -3,15 +3,15 @@
 set -m
 
 GOESRECV=/goes_config/goesrecv.conf
-if [ -f "$FILE" ]; then
-    echo "$FILE exists, skipping copy"
+if [ -f "$GOESRECV" ]; then
+    echo "$GOESRECV exists, skipping copy"
 else 
     cp /vitality-goes/goestools-conf/goesrecv.conf /goes_config/goesrecv.conf
 fi
 
 GOESPROC=/goes_config/goesproc-goesr.conf
-if [ -f "$FILE" ]; then
-    echo "$FILE exists, skipping copy"
+if [ -f "$GOESPROC" ]; then
+    echo "$GOESPROC exists, skipping copy"
 else 
     cp /vitality-goes/goestools-conf/goesrecv.conf /goes_config/goesrecv.conf
 fi
