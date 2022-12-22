@@ -20,7 +20,7 @@ echo "Starting goesrecv"
 goesrecv -c /goes_config/goesrecv.conf &
 
 echo "Starting goesproc"
-goesproc -c /goes_config/goesproc-goesr.conf  --subscribe localhost:5000 > /dev/null &
+goesproc  -c /goes_config/goesproc-goesr.conf --subscribe tcp://localhost:5004 > /dev/null &
 
 echo "Starting apache"
 service apache2 start &
