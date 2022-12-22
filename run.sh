@@ -16,12 +16,12 @@ else
     cp /vitality-goes/goestools-conf/goesrecv.conf /goes_config/goesrecv.conf
 fi
 echo "Starting goesrecv"
-nohup goesrecv -c /goes_config/goesrecv.conf > /dev/null &
+goesrecv -c /goes_config/goesrecv.conf &
 
 echo "Starting goesproc"
-nohup goesproc -c /goes_config/goesproc-goesr.conf  --subscribe localhost:5000 > /dev/null &
+goesproc -c /goes_config/goesproc-goesr.conf  --subscribe localhost:5000 > /dev/null &
 
 echo "Starting apache"
-service apache2 start
+service apache2 start &
 
 fg %1
