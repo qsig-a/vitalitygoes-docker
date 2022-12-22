@@ -13,8 +13,9 @@ GOESPROC=/goes_config/goesproc-goesr.conf
 if [ -f "$GOESPROC" ]; then
     echo "$GOESPROC exists, skipping copy"
 else 
-    cp /vitality-goes/goestools-conf/goesrecv.conf /goes_config/goesrecv.conf
+    cp /vitality-goes/goestools-conf/goesproc-goesr.conf /goes_config/goesproc-goesr.conf
 fi
+
 echo "Starting goesrecv"
 goesrecv -c /goes_config/goesrecv.conf &
 
