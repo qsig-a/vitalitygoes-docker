@@ -37,9 +37,6 @@ RUN cp -r html /var/www/html
 # Set localhost
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Prep configs
-RUN mkdir /goes_config
-
 # Copy run script
 COPY run.sh /run.sh
 

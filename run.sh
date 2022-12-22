@@ -2,6 +2,14 @@
 
 set -m
 
+if [ -d "/goes_config" ] 
+then
+    echo "Directory /goes_config exists." 
+else
+    echo "Directory /goes_config does not exist."
+    mkdir /goes_config
+fi
+
 GOESRECV=/goes_config/goesrecv.conf
 if [ -f "$GOESRECV" ]; then
     echo "$GOESRECV exists, skipping copy"
