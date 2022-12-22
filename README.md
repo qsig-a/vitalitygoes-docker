@@ -20,7 +20,7 @@ docker run -d --name goes_ga \
  --restart always \
  --privileged \
  -p 80:80
-  qsig/goes_ga:latest
+  qsig/goes_ha:latest
 ```
 
 If you would like to mount a volume with config files
@@ -31,5 +31,5 @@ docker run -d --name goes_ga \
  --privileged \
  -v /hostvolume/goes-config:/goes-config \
  -p 80:80 \
-  qsig/goes_ga:latest
+  qsig/goes_ha:latest
 ```
