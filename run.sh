@@ -2,6 +2,15 @@
 
 set -m
 
+if [ -d "/images" ] 
+then
+    echo "Directory /images exists." 
+else
+    echo "Directory /images does not exist."
+    mkdir /images
+fi
+
+
 if [ -d "/goes_config" ] 
 then
     echo "Directory /goes_config exists." 

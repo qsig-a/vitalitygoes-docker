@@ -40,4 +40,15 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Copy run script
 COPY run.sh /run.sh
 
+# Remove dev tools
+RUN apt purge -y \
+        build-essential \
+        cmake \
+        git-core \
+        libopencv-dev \
+        libproj-dev \
+        zlib1g-dev
+
+RUN apt autoclean
+
 CMD [ "/run.sh" ]
