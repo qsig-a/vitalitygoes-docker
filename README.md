@@ -1,4 +1,4 @@
-# goes_ha
+# docker-vitalitygoes-goestools
 
 Based on this [post](https://www.reddit.com/r/homeassistant/comments/zr1np8/using_satellite_weather_data_in_home_assistant/), this installs goestools and vitality-goes on one machine in order to make it easier to deploy and less manual work.
 
@@ -16,20 +16,21 @@ It will copy a baseline config for `goesrecv` and `goesproc` from the vitality r
 To run it with baseline config, you can simply run it like this
 
 ```
-docker run -d --name goes_ga \
+docker run -d --name vitality-goes \
  --restart always \
  --privileged \
  -p 80:80
-  qsig/goes_ha:main
+  qsig/docker-vitalitygoes-goestools:main
 ```
 
-If you would like to mount a volume with config files
+If you would like to mount a volume with config files and images
 
 ```
-docker run -d --name goes_ga \
+docker run -d --name vitality-goes \
  --restart always \
  --privileged \
  -v /hostvolume/goes-config:/goes-config \
+ -v /hostvolume/goes-images:/images \
  -p 80:80 \
-  qsig/goes_ha:main
+  qsig/docker-vitalitygoes-goestools:main
 ```
