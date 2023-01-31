@@ -1,4 +1,4 @@
-FROM --platform=linux/x86_64 debian:stable-slim
+FROM --platform=linux debian:stable-slim
 
 # Dependencies
 RUN apt update -y && apt install -y \
