@@ -1,14 +1,10 @@
 FROM --platform=linux/x86_64 debian:stable-slim
 
-RUN apt update -y
-# Vitality GOES Dependencies
-RUN apt install -y \
+# Dependencies
+RUN apt update -y && apt install -y \
         apache2 \
         php \
-        libapache2-mod-php
-
-# GOES Tools Dependencies
-RUN apt install -y \
+        libapache2-mod-php \
         build-essential \
         cmake \
         git-core \
@@ -21,7 +17,8 @@ RUN apt install -y \
 # Add goestools
 RUN git clone --recursive https://github.com/pietern/goestools
 WORKDIR /goestools
-RUN mkdir build
+COPY goestools-patches patches
+RUN git apply patches/*.patch && mkdir build
 WORKDIR /goestools/build
 RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make

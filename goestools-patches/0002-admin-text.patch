@@ -1,0 +1,15 @@
+diff --git a/src/goesproc/handler_text.cc b/src/goesproc/handler_text.cc
+index 3f4e6c5..26146e7 100644
+--- a/src/goesproc/handler_text.cc
++++ b/src/goesproc/handler_text.cc
+@@ -79,7 +79,9 @@ void TextHandler::handle(std::shared_ptr<const lrit::File> f) {
+ 
+     // Parse time from file name.
+     if (!goesrParseTextTime(text, time)) {
+-      // Unable to extract timestamp from file name
++      // Unable to extract timestamp from file name.  Use current system time instead.
++      auto rv = clock_gettime(CLOCK_REALTIME, &time);
++      ASSERT(rv >= 0);
+     }
+   }
+ 

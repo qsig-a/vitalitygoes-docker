@@ -34,3 +34,10 @@ docker run -d --name vitality-goes \
  -p 80:80 \
   qsig/docker-vitalitygoes-goestools:main
 ```
+
+## Credits
+
+More here later
+
+- Admin Text fix by @spinomaly
+- Proj 8 fix by @jim-minter

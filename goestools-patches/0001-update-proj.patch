@@ -1,0 +1,162 @@
+From 3a15b3a091ba38569c6fe76eb85d93d2403e11eb Mon Sep 17 00:00:00 2001
+From: Jim Minter <jim@minter.uk>
+Date: Thu, 22 Sep 2022 13:59:21 -0500
+Subject: [PATCH] update proj
+
+---
+ src/goesproc/map_drawer.cc | 16 +++++++-------
+ src/goesproc/proj.cc       | 45 ++++++++++----------------------------
+ src/goesproc/proj.h        | 18 +++++----------
+ 3 files changed, 25 insertions(+), 54 deletions(-)
+
+diff --git a/src/goesproc/map_drawer.cc b/src/goesproc/map_drawer.cc
+index 2ab1bcb..f5f6a69 100644
+--- a/src/goesproc/map_drawer.cc
++++ b/src/goesproc/map_drawer.cc
+@@ -5,12 +5,12 @@ using namespace nlohmann;
+ namespace {
+ 
+ Proj longitudeToProj(float longitude) {
+-  std::map<std::string, std::string> args;
+-  args["proj"] = "geos";
+-  args["h"] = "35786023.0";
+-  args["lon_0"] = std::to_string(longitude);
+-  args["sweep"] = "x";
+-  return Proj(args);
++  std::stringstream args;
++  args << "+proj=geos ";
++  args << "+h=35786023.0 ";
++  args << "+lon_0=" << std::to_string(longitude) << " ";
++  args << "+sweep=x";
++  return Proj(args.str());
+ }
+ 
+ } // namespace
+@@ -36,8 +36,8 @@ void MapDrawer::generatePoints(
+   double lat, lon;
+   double x, y;
+   for (const auto& coord : coords) {
+-    lon = coord.at(0).get<double>() * DEG_TO_RAD;
+-    lat = coord.at(1).get<double>() * DEG_TO_RAD;
++    lon = proj_torad(coord.at(0).get<double>());
++    lat = proj_torad(coord.at(1).get<double>());
+     std::tie(x, y) = proj_.fwd(lon, lat);
+ 
+     // If out of range, ignore
+diff --git a/src/goesproc/proj.cc b/src/goesproc/proj.cc
+index 31fe40d..50634c5 100644
+--- a/src/goesproc/proj.cc
++++ b/src/goesproc/proj.cc
+@@ -5,56 +5,35 @@
+ 
+ namespace {
+ 
+-std::vector<std::string> toVector(
+-  const std::map<std::string, std::string>& args) {
+-  std::vector<std::string> vargs;
+-  vargs.reserve(args.size());
+-  for (const auto& arg : args) {
+-    std::stringstream ss;
+-    ss << arg.first << "=" << arg.second;
+-    vargs.push_back(ss.str());
+-  }
+-  return vargs;
+-}
+-
+ std::string pj_error(std::string prefix = "proj: ") {
+   std::stringstream ss;
+-  ss << prefix << pj_strerrno(pj_errno);
++  ss << prefix << proj_errno_string(proj_errno(NULL));
+   return ss.str();
+ }
+ 
+ } // namespace
+ 
+-Proj::Proj(const std::vector<std::string>& args) {
+-  std::vector<char*> argv;
+-  for (const auto& arg : args) {
+-    argv.push_back(strdup(arg.c_str()));
+-  }
+-  proj_ = pj_init(argv.size(), argv.data());
++Proj::Proj(const std::string& args) {
++  proj_ = proj_create(NULL, args.c_str());
+   if (!proj_) {
+     throw std::runtime_error(pj_error("proj initialization error: "));
+   }
+-  for (auto& arg : argv) {
+-    free(arg);
+-  }
+-}
+-
+-Proj::Proj(const std::map<std::string, std::string>& args)
+-  : Proj(toVector(args)) {
+ }
+ 
+ Proj::~Proj() {
+-  pj_free(proj_);
++  proj_destroy(proj_);
+ }
+ 
+ std::tuple<double, double> Proj::fwd(double lon, double lat) {
+-  projUV in = { lon, lat };
+-  projXY out = pj_fwd(in, proj_);
+-  return std::make_tuple<double, double>(std::move(out.u), std::move(out.v));
++  PJ_COORD in;
++  in.uv = { lon, lat };
++  PJ_COORD out = proj_trans(proj_, PJ_FWD, in);
++  return std::make_tuple<double, double>(std::move(out.xy.x), std::move(out.xy.y));
+ }
+ 
+ std::tuple<double, double> Proj::inv(double x, double y) {
+-  projXY in = { x, y };
+-  projUV out = pj_inv(in, proj_);
+-  return std::make_tuple<double, double>(std::move(out.u), std::move(out.v));
++  PJ_COORD in;
++  in.xy = { x, y };
++  PJ_COORD out = proj_trans(proj_, PJ_INV, in);
++  return std::make_tuple<double, double>(std::move(out.uv.u), std::move(out.uv.v));
+ }
+diff --git a/src/goesproc/proj.h b/src/goesproc/proj.h
+index 9f76ef9..5c5a86c 100644
+--- a/src/goesproc/proj.h
++++ b/src/goesproc/proj.h
+@@ -1,25 +1,17 @@
+ #pragma once
+ 
+-#if PROJ_VERSION_MAJOR < 4
+-#error "proj version >= 4 required"
+-#else
+-// Assume proj continues to ship with a backwards compatibility layer.
+-// See for a migration guide https://proj.org/development/migration.html.
+-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
++#if PROJ_VERSION_MAJOR < 5
++#error "proj version >= 5 required"
+ #endif
+ 
+-#include <map>
+ #include <string>
+ #include <tuple>
+-#include <vector>
+ 
+-#include <proj_api.h>
++#include <proj.h>
+ 
+ class Proj {
+ public:
+-  explicit Proj(const std::vector<std::string>& args);
+-
+-  explicit Proj(const std::map<std::string, std::string>& args);
++  explicit Proj(const std::string& args);
+ 
+   ~Proj();
+ 
+@@ -28,5 +20,5 @@ public:
+   std::tuple<double, double> inv(double x, double y);
+ 
+ protected:
+-  projPJ proj_;
++  PJ *proj_;
+ };
+-- 
+2.30.2
+
