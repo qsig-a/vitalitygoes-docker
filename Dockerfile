@@ -1,6 +1,10 @@
-FROM --platform=linux debian:stable-slim
+FROM debian:stable-slim
 
-# Dependencies
+#Copy in all files
+COPY configs /configs
+COPY run.sh /run.sh
+
+# Dependencies, build goestools, then remove build tools
 RUN apt update -y && apt install -y \
         apache2 \
         php \
@@ -12,40 +16,32 @@ RUN apt update -y && apt install -y \
         libproj-dev \
         zlib1g-dev \
         librtlsdr-dev \
-        libairspy-dev
-
-# Add goestools
-RUN git clone --recursive https://github.com/pietern/goestools
-WORKDIR /goestools
-COPY goestools-patches patches
-RUN git apply patches/*.patch && mkdir build
-WORKDIR /goestools/build
-RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-RUN make
-RUN make install
-
-# Add vitality-goes
-RUN rm -rf /var/www/html
-WORKDIR /
-RUN git clone https://github.com/JVital2013/vitality-goes
-WORKDIR /vitality-goes
-RUN cp -r html /var/www/html
-
-# Set localhost
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-# Copy run script
-COPY run.sh /run.sh
-
-# Remove dev tools
-RUN apt purge -y \
+        libairspy-dev && \
+    git clone --recursive https://github.com/pietern/goestools && \
+    cd /goestools && \
+    git apply /configs/goestools-patches/*.patch && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local && \
+    make && \
+    make install && \
+    cd / && \
+    rm -rf /goestools && \
+    apt purge -y \
         build-essential \
         cmake \
         git-core \
         libopencv-dev \
         libproj-dev \
-        zlib1g-dev
+        zlib1g-dev && \
+        apt autoclean
 
-RUN apt autoclean
+
+# Add vitality-goes
+RUN rm -rf /var/www/html && \
+    git clone https://github.com/JVital2013/vitality-goes && \
+    cp -r vitality-goes/html /var/www/html && \
+    echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    chmod +x /run.sh
 
 CMD [ "/run.sh" ]
