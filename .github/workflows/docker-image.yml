@@ -25,7 +25,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4.3.0
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/goes_ha
+          images: ${{ secrets.DOCKER_USERNAME }}/vitalitygoes
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
