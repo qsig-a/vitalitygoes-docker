@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -m
-
 # Set up image directory
 if [ -d "/images" ]
 then
@@ -60,4 +58,4 @@ goesrecv -c $GOESRECV &
 echo "Starting goesproc"
 goesproc -c $GOESPROC --subscribe tcp://localhost:5004 > /dev/null &
 
-fg %1
+wait

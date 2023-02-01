@@ -4,8 +4,6 @@ This installs goestools and Vitality GOES in one docker container in order to ma
 - https://github.com/pietern/goestools
 - https://github.com/JVital2013/vitality-goes
 
-Patches are applied to goestoo
-
 ## Running it in docker
 
 To run it with baseline config for GOES-16, you can simply run it like this:
@@ -30,7 +28,7 @@ docker run -d --name vitality-goes \
 ```
 
 
-If you would like to mount a volume with config files and images:
+If you would like to mount volumes for configs, images, and videos:
 
 ```
 docker run -d --name vitality-goes \
@@ -38,10 +36,13 @@ docker run -d --name vitality-goes \
  --privileged \
  -v /path/to/goestools-config:/goestools-config \
  -v /path/to/vitalitygoes-config:/var/www/html/config \
+ -v /path/to/goes-videos:/var/www/html/videos \
  -v /path/to/goes-images:/images \
  -p 80:80 \
   qsig/vitalitygoes:main
 ```
+
+**Once started, allow 1 hour for imagery to show up**
 
 ## Credits
 
