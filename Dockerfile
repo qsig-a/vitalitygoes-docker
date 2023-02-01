@@ -44,4 +44,5 @@ RUN rm -rf /var/www/html && \
     echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     chmod +x /run.sh
 
+ENV SATELLITE goes16
 CMD [ "/run.sh" ]
