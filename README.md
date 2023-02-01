@@ -1,12 +1,13 @@
 # Vitality GOES - Docker Image
 
 This installs goestools and Vitality GOES in one docker container in order to make it easier to deploy. This image pulls code from:
-- https://github.com/pietern/goestools
-- https://github.com/JVital2013/vitality-goes
+
+- https://github.com/pietern/goestools - Commit 865e5c7
+- https://github.com/JVital2013/vitality-goes - Version 1.4.1
 
 ## Running it in docker
 
-To run it with baseline config for GOES-16, you can simply run it like this:
+This image supports armv7, armv7, and x64 hosts. To run it with baseline config for GOES-16, you can simply run it like this:
 
 ```
 docker run -d --name vitality-goes \
@@ -41,6 +42,8 @@ docker run -d --name vitality-goes \
  -p 80:80 \
   qsig/vitalitygoes:main
 ```
+
+As always, the volume and SATELLITE environment flags can be mixed/matched.
 
 **Once started, allow 1 hour for imagery to show up**
 

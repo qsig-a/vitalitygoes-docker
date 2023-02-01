@@ -19,6 +19,7 @@ RUN apt update -y && apt install -y \
         libairspy-dev && \
     git clone --recursive https://github.com/pietern/goestools && \
     cd /goestools && \
+    git checkout 865e5c7 && \
     git apply /configs/goestools-patches/*.patch && \
     mkdir build && \
     cd build && \
@@ -40,6 +41,7 @@ RUN apt update -y && apt install -y \
 # Add vitality-goes
 RUN rm -rf /var/www/html && \
     git clone https://github.com/JVital2013/vitality-goes && \
+    git checkout v1.4.1 && \
     cp -r vitality-goes/html /var/www/html && \
     echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     chmod +x /run.sh
