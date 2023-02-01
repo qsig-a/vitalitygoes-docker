@@ -41,8 +41,9 @@ RUN apt update -y && apt install -y \
 # Add vitality-goes
 RUN rm -rf /var/www/html && \
     git clone https://github.com/JVital2013/vitality-goes && \
+    cd vitality-goes && \
     git checkout v1.4.1 && \
-    cp -r vitality-goes/html /var/www/html && \
+    cp -r html /var/www/html && \
     echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     chmod +x /run.sh
 
